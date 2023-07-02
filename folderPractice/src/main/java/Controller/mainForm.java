@@ -51,6 +51,11 @@ public class mainForm implements Initializable {
     @FXML
     private TableColumn<Product, Double> prodPriceCol;
 
+    /**
+     * Sets stage to load Add Part screen interface. It is used to add parts to inventory
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void addPartButtonOnAction(ActionEvent event) throws IOException {
 
@@ -64,6 +69,12 @@ public class mainForm implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+
+    /**
+     * Sets stage to load Modify Part screen interface. It is used to modify parts in inventory
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void modifyPartButtonOnAction(ActionEvent event) throws IOException {
 
@@ -80,6 +91,10 @@ public class mainForm implements Initializable {
         stage.show();
     }
 
+    /**
+     * On click of Button, deletes part from Parts table view if valid part has been selected
+     * @param actionEvent
+     */
     public void deletePartOnAction(ActionEvent actionEvent) {
         Part selectPart = partsTblView.getSelectionModel().getSelectedItem();
         if (selectPart == null) {
@@ -97,6 +112,12 @@ public class mainForm implements Initializable {
             Inventory.deletePart(partsTblView.getSelectionModel().getSelectedItem());
         }
     }
+
+    /**
+     * Sets stage to load Add Product screen interface. It is used to add products to inventory
+     * @param actionEvent
+     * @throws IOException
+     */
     public void addProductOnAction(ActionEvent actionEvent) throws IOException {
 
         stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
@@ -110,7 +131,11 @@ public class mainForm implements Initializable {
         stage.show();
     }
 
-
+    /**
+     * Sets stage to load Modify Part screen interface. It is used to modify products in inventory.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void modifyProductOnAction(ActionEvent actionEvent) throws IOException {
 
         FXMLLoader loader = new FXMLLoader();
@@ -126,6 +151,10 @@ public class mainForm implements Initializable {
         stage.show();
     }
 
+    /**
+     * On click of Button, deletes selected product from Product table view if there is no associated part attached to the product
+     * @param actionEvent
+     */
     public void deleteProductOnAction(ActionEvent actionEvent) {
         Product selectProduct = productTableView.getSelectionModel().getSelectedItem();
         if (selectProduct == null) {
@@ -152,6 +181,10 @@ public class mainForm implements Initializable {
         }
     }
 
+    /**
+     * Search box to look up either product ID or name of product
+     * @param actionEvent
+     */
     public void productSearchOnAction(ActionEvent actionEvent) {
         String name = productSearch.getText();
         ObservableList<Product> searchProduct = Inventory.lookupProduct(name);
@@ -167,6 +200,10 @@ public class mainForm implements Initializable {
         productTableView.getSelectionModel().select(0);
     }
 
+    /**
+     * Search box to look up either part ID or name of part
+     * @param actionEvent
+     */
     public void partSearchOnAction(ActionEvent actionEvent) {
         String name = partSearch.getText();
         ObservableList<Part> searchPart = Inventory.lookupPart(name);
@@ -184,6 +221,17 @@ public class mainForm implements Initializable {
 
     }
 
+    /**
+     * Initialize two table view charts - one for Parts and one for Products
+     * Initialize auto selection of first item from the table view charts.
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         partsTblView.setItems(Inventory.getAllParts());
@@ -201,6 +249,11 @@ public class mainForm implements Initializable {
         productTableView.getSelectionModel().select(0);
         partsTblView.getSelectionModel().select(0);
     }
+
+    /**
+     * On click of button, exit the program
+     * @param actionEvent
+     */
     public void exitButtonClicked(ActionEvent actionEvent) {
 
         System.exit(0);
