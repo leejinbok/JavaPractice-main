@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.example.folderPractice","l":"Controller"},{"m":"com.example.folderPractice","l":"model"}];updateSearchResults();

@@ -1,4 +1,4 @@
-module com.example.folderpractice {
+module com.example.folderPractice {
     requires javafx.controls;
     requires javafx.fxml;
 

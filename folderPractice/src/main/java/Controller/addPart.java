@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 /**
- * a controller for adding parts to the inventory.
+ * addPart - a controller for adding parts to the inventory.
  */
-public class addPart implements Initializable {
+public class addPart {
     Stage stage;
     Parent scene;
     @FXML
@@ -41,8 +41,9 @@ public class addPart implements Initializable {
     private RadioButton addPartInHouse;
     @FXML
     private Label machineIDLbl;
+
     /**
-     * a simple function to return new auto-generated ID.
+     * a simple function to return new auto-generated part ID.
      *
      * @return newID starting at ID 101.
      */
@@ -53,65 +54,67 @@ public class addPart implements Initializable {
         }
         return newID;
     }
+
     /**
+     * On press of save button, store items in observable list Part - sorted as either in-house or outsource
      *
      * @param event
      * @throws IOException
      */
     @FXML
     void addPartSaveButton(ActionEvent event) throws IOException {
-        try{
-        int id = Integer.parseInt(idTxt.getText());
-        String name = nameTxt.getText();
-        int stock = Integer.parseInt(invTxt.getText());
-        double price = Double.parseDouble(priceTxt.getText());
-        int max = Integer.parseInt(maxTxt.getText());
-        int min = Integer.parseInt(minTxt.getText());
-        int machineId;
-        String companyName = null;
+        try {
+            int id = newPartId();
+            String name = nameTxt.getText();
+            int stock = Integer.parseInt(invTxt.getText());
+            double price = Double.parseDouble(priceTxt.getText());
+            int max = Integer.parseInt(maxTxt.getText());
+            int min = Integer.parseInt(minTxt.getText());
+            int machineId;
+            String companyName = null;
 
-        //conditional to address that max has to be greater than min
-        if (min > max) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning!");
-            alert.setContentText("Min must be less than or equal to Max");
-            alert.showAndWait();
+            //conditional to address that max has to be greater than min
+            if (min > max) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setContentText("Min must be less than or equal to Max");
+                alert.showAndWait();
 
-        //conditional to address that stock has to be within ranges of min and max
-        } else if (stock > max || stock < min) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning!");
-            alert.setContentText("Inv must be within range between Min and Max");
-            alert.showAndWait();
+                //conditional to address that stock has to be within ranges of min and max
+            } else if (stock > max || stock < min) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setContentText("Inv must be within range between Min and Max");
+                alert.showAndWait();
 
-        //conditional to address that name field cannot be empty
-        } else if (name.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning!");
-            alert.setContentText("Name cannot be blank");
-            alert.showAndWait();
+                //conditional to address that name field cannot be empty
+            } else if (name.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setContentText("Name cannot be blank");
+                alert.showAndWait();
 
-        //conditional branch to set Machine ID text to display correct text
-        } else {
+                //conditional branch to set Machine ID text to display correct text
+            } else {
 
-            if (addPartInHouse.isSelected()) {
-                machineIDLbl.setText("Machine ID");
-                machineId = Integer.parseInt(machineTxt.getText());
-                Inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
-            } else if (addPartOutsourced.isSelected()) {
-                machineIDLbl.setText("Company Name");
-                companyName = machineTxt.getText();
-                Inventory.addPart(new Outsourced(id, name, price, stock, min, max, companyName));
+                if (addPartInHouse.isSelected()) {
+                    machineIDLbl.setText("Machine ID");
+                    machineId = Integer.parseInt(machineTxt.getText());
+                    Inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
+                } else if (addPartOutsourced.isSelected()) {
+                    machineIDLbl.setText("Company Name");
+                    companyName = machineTxt.getText();
+                    Inventory.addPart(new Outsourced(id, name, price, stock, min, max, companyName));
+                }
             }
-        }
-    }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setContentText("Please enter valid values for all fields");
             alert.showAndWait();
         }
     }
+
     /**
      * On press of Cancel button, return to main screen
      *
@@ -119,7 +122,7 @@ public class addPart implements Initializable {
      */
     public void addPartCancelOnAction(ActionEvent actionEvent) {
 
-        stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         try {
             scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
         } catch (IOException e) {
@@ -128,6 +131,7 @@ public class addPart implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+
     /**
      * On click of in-house radio button, set the Machine ID label to "Machine ID"
      *
@@ -136,6 +140,7 @@ public class addPart implements Initializable {
     public void onClickInHouse(ActionEvent actionEvent) {
         machineIDLbl.setText("Machine ID");
     }
+
     /**
      * On click of Outsourced radio button, set the Machine ID label to "Company Name"
      *
@@ -143,20 +148,5 @@ public class addPart implements Initializable {
      */
     public void onClickOutsourced(ActionEvent actionEvent) {
         machineIDLbl.setText("Company Name");
-    }
-    /**
-     * On controller start, value of new part ID is auto generated for idTxt block.
-     *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        idTxt.setText(String.valueOf(newPartId()));
     }
 }

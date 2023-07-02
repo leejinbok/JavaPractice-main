@@ -20,6 +20,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * mainForm - controller for the main screen. Provides links to parts and products information, as well as table view of current listed parts and products.
+ */
 public class mainForm implements Initializable {
 
     public TextField partSearch;

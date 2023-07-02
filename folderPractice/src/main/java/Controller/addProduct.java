@@ -17,7 +17,9 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
+/**
+ * addProduct - a controller for adding products to the inventory.
+ */
 public class addProduct implements Initializable {
 
     @FXML
@@ -57,6 +59,11 @@ public class addProduct implements Initializable {
     Stage stage;
     Parent scene;
 
+    /**
+     * On press of Cancel button, return to main screen
+     *
+     * @param event
+     */
     @FXML
     void cancelButtonOnAction(ActionEvent event) throws IOException {
 
@@ -69,28 +76,43 @@ public class addProduct implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+
+    /**
+     * save highlighted data from Parts list to associated part to product on Button click
+     * @param actionEvent
+     */
     public void addButtonOnAction(ActionEvent actionEvent){
         Product.addAssociatedPart((Part)(partsTblView.getSelectionModel().getSelectedItem()));
     }
+    /**
+     * On press of save button, store items in observable list Product
+     * @param actionEvent
+     * @throws IOException
+     */
     public void saveButtonOnAction(ActionEvent actionEvent) throws IOException {
         try {
-            int id = Integer.parseInt(idTxt.getText());
+            int id = newProdId();
             String name = nameTxt.getText();
             int stock = Integer.parseInt(invTxt.getText());
             double price = Double.parseDouble(priceTxt.getText());
             int max = Integer.parseInt(maxTxt.getText());
             int min = Integer.parseInt(minTxt.getText());
 
+            //conditional to address that max has to be greater than min
             if (min > max) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Min must be less than or equal to Max");
                 alert.showAndWait();
+
+            //conditional to address that stock has to be within ranges of min and max
             } else if (stock > max || stock < min) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
                 alert.showAndWait();
+
+            //conditional to address that name field cannot be empty
             } else if (name.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
@@ -107,6 +129,10 @@ public class addProduct implements Initializable {
                 alert.showAndWait();
         }
     }
+    /**
+     * remove highlighted data from associated parts list on Button click
+     * @param actionEvent
+     */
     public void removePart(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
@@ -117,7 +143,11 @@ public class addProduct implements Initializable {
             Product.deleteAssociatedPart((Part)(productTableView.getSelectionModel().getSelectedItem()));
         }
     }
-    
+    /**
+     * a simple function to return new auto-generated product ID.
+     *
+     * @return newID starting at ID 1001.
+     */
     public static int newProdId() {
         int newID = 1000;
         for (int i = 0; i < Inventory.getAllParts().size(); i++) {
@@ -125,6 +155,11 @@ public class addProduct implements Initializable {
         }
         return newID;
     }
+
+    /**
+     * Search box to look up either part ID or name of part
+     * @param actionEvent
+     */
     public void searchPartOnAction(ActionEvent actionEvent) {
         String search = searchPart.getText();
         ObservableList<Part> searchPartList = Inventory.lookupPart(search);
@@ -137,6 +172,18 @@ public class addProduct implements Initializable {
             }
         }
     }
+
+    /**
+     * Initialize two tables - one for parts and one for associated parts to product.
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -152,7 +199,6 @@ public class addProduct implements Initializable {
         prodInvLevelCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
         prodPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        idTxt.setText(String.valueOf(newProdId()));
 
     }
 

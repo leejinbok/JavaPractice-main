@@ -3,8 +3,10 @@ package Controller;
  * @author Jin Lee
  * C482 Software I
  * WGU Student ID 009941278
+ * JavaDoc is saved under JavaPractice-main/folderPractice/Javadocs
  *
  * FUTURE_ENHANCEMENT: I would add a pop-up dialogue to confirm the addition of parts/products when pressing the save button. It would give high-level details on what is being added to the system and to confirm th at it was added without error.
+ *
  */
 
 import javafx.application.Application;
