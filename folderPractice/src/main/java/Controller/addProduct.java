@@ -14,7 +14,6 @@ import model.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 /**
@@ -60,9 +59,7 @@ public class addProduct implements Initializable {
     Parent scene;
 
     /**
-     * On press of Cancel button, return to main screen
-     *
-     * @param event
+     * @param event - On press of Cancel button, return to main screen
      */
     @FXML
     void cancelButtonOnAction(ActionEvent event) throws IOException {
@@ -78,15 +75,13 @@ public class addProduct implements Initializable {
     }
 
     /**
-     * save highlighted data from Parts list to associated part to product on Button click
-     * @param actionEvent
+     * @param actionEvent - save highlighted data from Parts list to associated part to product on Button click
      */
     public void addButtonOnAction(ActionEvent actionEvent){
         Product.addAssociatedPart((Part)(partsTblView.getSelectionModel().getSelectedItem()));
     }
     /**
-     * On press of save button, store items in observable list Product
-     * @param actionEvent
+     * @param actionEvent - On press of save button, store items in observable list Product
      * @throws IOException
      */
     public void saveButtonOnAction(ActionEvent actionEvent) throws IOException {
@@ -130,8 +125,7 @@ public class addProduct implements Initializable {
         }
     }
     /**
-     * remove highlighted data from associated parts list on Button click
-     * @param actionEvent
+     * @param actionEvent - remove highlighted data from associated parts list on Button click
      */
     public void removePart(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -157,8 +151,7 @@ public class addProduct implements Initializable {
     }
 
     /**
-     * Search box to look up either part ID or name of part
-     * @param actionEvent
+     * @param actionEvent - Search box to look up either part ID or name of part
      */
     public void searchPartOnAction(ActionEvent actionEvent) {
         String search = searchPart.getText();

@@ -56,9 +56,7 @@ public class addPart {
     }
 
     /**
-     * On press of save button, store items in observable list Part - sorted as either in-house or outsource
-     *
-     * @param event
+     * @param event - On press of save button, store items in observable list Part - sorted as either in-house or outsource
      * @throws IOException
      */
     @FXML
@@ -100,6 +98,7 @@ public class addPart {
                 if (addPartInHouse.isSelected()) {
                     machineIDLbl.setText("Machine ID");
                     machineId = Integer.parseInt(machineTxt.getText());
+
                     Inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
                 } else if (addPartOutsourced.isSelected()) {
                     machineIDLbl.setText("Company Name");
@@ -116,9 +115,7 @@ public class addPart {
     }
 
     /**
-     * On press of Cancel button, return to main screen
-     *
-     * @param actionEvent
+     * @param actionEvent - On press of Cancel button, return to main screen
      */
     public void addPartCancelOnAction(ActionEvent actionEvent) {
 
@@ -133,18 +130,15 @@ public class addPart {
     }
 
     /**
-     * On click of in-house radio button, set the Machine ID label to "Machine ID"
-     *
-     * @param actionEvent
+     * @param actionEvent - On click of in-house radio button, set the Machine ID label to "Machine ID"
      */
     public void onClickInHouse(ActionEvent actionEvent) {
         machineIDLbl.setText("Machine ID");
     }
 
     /**
-     * On click of Outsourced radio button, set the Machine ID label to "Company Name"
-     *
-     * @param actionEvent
+
+     * @param actionEvent - On click of Outsourced radio button, set the Machine ID label to "Company Name"
      */
     public void onClickOutsourced(ActionEvent actionEvent) {
         machineIDLbl.setText("Company Name");

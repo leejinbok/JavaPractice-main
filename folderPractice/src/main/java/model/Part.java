@@ -1,9 +1,6 @@
 package model;
 /**
  * Supplied class Part.java
- */
-
-/**
  *
  * @author Jin Lee
  */
@@ -12,6 +9,15 @@ public abstract class Part {
     private double price;
     private String name;
 
+    /**
+     * create the default constructor
+     * @param id - set id
+     * @param name - set name
+     * @param price - set price
+     * @param stock - set stock
+     * @param min - set min
+     * @param max - set max
+     */
     public Part(int id, String name, double price, int stock, int min, int max) {
         this.id = id;
         this.stock = stock;
@@ -21,7 +27,8 @@ public abstract class Part {
         this.name = name;
     }
     /**
-     * @return the id
+     * getter for ID
+     * @return id
      */
     public int getId() {
         return id;
@@ -33,6 +40,7 @@ public abstract class Part {
         this.id = id;
     }
     /**
+     * getter for inventory
      * @return the stock
      */
     public int getStock() {
@@ -45,6 +53,7 @@ public abstract class Part {
         this.stock = stock;
     }
     /**
+     * getter for Min value
      * @return the min
      */
     public int getMin() {
@@ -57,6 +66,7 @@ public abstract class Part {
         this.min = min;
     }
     /**
+     * getter for Max value
      * @return the max
      */
     public int getMax() {

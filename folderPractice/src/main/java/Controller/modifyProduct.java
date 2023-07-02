@@ -19,7 +19,9 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
+/**
+ * modifyPart - Controller to modify product data in the inventory
+ */
 public class modifyProduct implements Initializable {
 
     @FXML
@@ -59,8 +61,11 @@ public class modifyProduct implements Initializable {
     Stage stage;
     Parent scene;
 
-    @FXML
-    void cancelButtonOnAction(ActionEvent event) throws IOException {
+    /**
+     * @param event - on press of Cancel button, return to main screen
+     * @throws IOException
+     */
+    public void cancelButtonOnAction(ActionEvent event) throws IOException {
 
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         try {
@@ -71,7 +76,9 @@ public class modifyProduct implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
+    /**
+     * @param actionEvent - save highlighted data from Parts list to associated part to product on Button click
+     */
     public void addButtonOnAction(ActionEvent actionEvent) {
         Part selectedPart = (Part) partsTblView.getSelectionModel().getSelectedItem();
         if (selectedPart == null) {
@@ -82,6 +89,9 @@ public class modifyProduct implements Initializable {
             Product.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
         }
     }
+    /**
+     * @param actionEvent - On press of save button, store items in observable list Product
+     */
     public void saveButtonOnAction(ActionEvent actionEvent) {
         try {
             int id = Integer.parseInt(idTxt.getText());
@@ -120,6 +130,9 @@ public class modifyProduct implements Initializable {
 
         }
     }
+    /**
+     * @param product - Receive product information from main screen from selected tableview row
+     */
     public void sendProduct(Product product) {
         idTxt.setText(String.valueOf(product.getId()));
         nameTxt.setText(String.valueOf(product.getName()));
@@ -128,6 +141,9 @@ public class modifyProduct implements Initializable {
         maxTxt.setText(String.valueOf(product.getMax()));
         minTxt.setText(String.valueOf(product.getMin()));
     }
+    /**
+     * @param actionEvent - remove highlighted data from associated parts list on Button click
+     */
     public void removePart(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
@@ -138,6 +154,9 @@ public class modifyProduct implements Initializable {
             Product.deleteAssociatedPart((Part)(productTableView.getSelectionModel().getSelectedItem()));
         }
     }
+    /**
+     * @param actionEvent - Search box to look up either part ID or name of part
+     */
     public void searchPartOnAction(ActionEvent actionEvent) {
         String search = searchPart.getText();
         ObservableList<Part> searchPartList = Inventory.lookupPart(search);
@@ -150,6 +169,17 @@ public class modifyProduct implements Initializable {
             }
         }
     }
+    /**
+     * Initialize two tables - one for parts and one for associated parts to product.
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

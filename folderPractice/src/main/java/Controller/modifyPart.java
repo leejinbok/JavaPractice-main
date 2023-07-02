@@ -18,12 +18,13 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class modifyPart implements Initializable {
+/**
+ * modifyPart - Controller to modify part data in the inventory
+ */
+public class modifyPart {
 
     Stage stage;
     Parent scene;
-    private Part part;
-
     @FXML
     private TextField idTxt;
     @FXML
@@ -45,6 +46,10 @@ public class modifyPart implements Initializable {
     @FXML
     private Label machineIDLbl;
 
+    /**
+     * @param event - On press of Save button, saves entered part data to inventory
+     * @throws IOException
+     */
     @FXML
     void modPartSaveButton(ActionEvent event) throws IOException {
 
@@ -94,6 +99,9 @@ public class modifyPart implements Initializable {
         }
     }
 
+    /**
+     * @param actionEvent - on press of Cancel button, return to main screen
+     */
     public void modPartCancelOnAction(ActionEvent actionEvent) {
 
         stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
@@ -105,15 +113,23 @@ public class modifyPart implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
+    /**
+     * @param actionEvent - On click of in-house radio button, set the Machine ID label to "Machine ID"
+     */
     public void onClickInHouse(ActionEvent actionEvent) {
         machineIDLbl.setText("Machine ID");
     }
 
+    /**
+     * @param actionEvent - On click of Outsourced radio button, set the Machine ID label to "Company Name"
+     */
     public void onClickOutsourced(ActionEvent actionEvent) {
         machineIDLbl.setText("Company Name");
     }
 
+    /**
+     * @param part - Receive parts information from main screen from selected tableview row
+     */
     public void sendPart(Part part) {
 
         idTxt.setText(String.valueOf(part.getId()));
@@ -132,12 +148,5 @@ public class modifyPart implements Initializable {
             machineIDLbl.setText("Company Name");
             machineTxt.setText(((Outsourced) part).getCompanyName());
         }
-
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
-
 }

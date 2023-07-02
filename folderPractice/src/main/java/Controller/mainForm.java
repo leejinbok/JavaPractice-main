@@ -19,8 +19,21 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
 /**
+ * @author Jin Lee
+ * C482 Software I
+ * WGU Student ID 009941278
+ * JavaDoc is saved under JavaPractice-main/folderPractice/Javadocs
+ * <p><b>
+ * FUTURE_ENHANCEMENT: I would add a pop-up dialogue to confirm the addition of parts/products when pressing the save button. It would give high-level details on what is being added to the system and to confirm th at it was added without error.
+ * </b></p>
+ *
+ * <p><b>
+ * RUNTIME_ERROR: I ran into NumberFormatException error when trying to convert strings or null fields into integer values.
+ * I integrated a try and catch block to catch and raise an error message.
+ * </b></p>
+ *
+ *
  * mainForm - controller for the main screen. Provides links to parts and products information, as well as table view of current listed parts and products.
  */
 public class mainForm implements Initializable {
