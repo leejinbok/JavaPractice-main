@@ -45,10 +45,10 @@ public class addPart {
     /**
      * a simple function to return new auto-generated part ID.
      *
-     * @return newID starting at ID 101.
+     * @return newID starting at ID 2.
      */
     public static int newPartId() {
-        int newID = 100;
+        int newID = 1;
         for (int i = 0; i < Inventory.getAllParts().size(); i++) {
             newID++;
         }
@@ -106,6 +106,14 @@ public class addPart {
                     Inventory.addPart(new Outsourced(id, name, price, stock, min, max, companyName));
                 }
             }
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            try {
+                scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            stage.setScene(new Scene(scene));
+            stage.show();
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");

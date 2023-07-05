@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
  * modifyPart - Controller to modify part data in the inventory
  */
 public class modifyPart {
-
+    private int index = 0;
     Stage stage;
     Parent scene;
     @FXML
@@ -45,6 +45,7 @@ public class modifyPart {
     private RadioButton modPartOutsourced;
     @FXML
     private Label machineIDLbl;
+    private int indexID;
 
     /**
      * @param event - On press of Save button, saves entered part data to inventory
@@ -84,13 +85,24 @@ public class modifyPart {
                 if (modPartInHouse.isSelected()) {
                     machineIDLbl.setText("Machine ID");
                     machineId = Integer.parseInt(machineTxt.getText());
-                    Inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
+                    Part inHousePart = new InHouse(id, name, price, stock, min, max, machineId);
+                    Inventory.updatePart(indexID,inHousePart);
+
                 } else if (modPartOutsourced.isSelected()) {
                     machineIDLbl.setText("Company Name");
                     companyName = machineTxt.getText();
-                    Inventory.addPart(new Outsourced(id, name, price, stock, min, max, companyName));
+                    Part outsourcedPart = new Outsourced(id, name, price, stock, min, max, companyName);
+                    Inventory.updatePart(indexID,outsourcedPart);
                 }
             }
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            try {
+                scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            stage.setScene(new Scene(scene));
+            stage.show();
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
@@ -131,7 +143,7 @@ public class modifyPart {
      * @param part - Receive parts information from main screen from selected tableview row
      */
     public void sendPart(Part part) {
-
+        indexID = Inventory.getAllParts().indexOf(part);
         idTxt.setText(String.valueOf(part.getId()));
         nameTxt.setText(String.valueOf(part.getName()));
         invTxt.setText(String.valueOf(part.getStock()));

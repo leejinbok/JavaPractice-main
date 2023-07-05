@@ -1,5 +1,6 @@
 package Controller;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -60,6 +61,7 @@ public class modifyProduct implements Initializable {
     private TableColumn partPriceCol;
     Stage stage;
     Parent scene;
+    private int indexID;
 
     /**
      * @param event - on press of Cancel button, return to main screen
@@ -67,7 +69,7 @@ public class modifyProduct implements Initializable {
      */
     public void cancelButtonOnAction(ActionEvent event) throws IOException {
 
-        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         try {
             scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("mainForm.fxml")));
         } catch (IOException e) {
@@ -76,24 +78,27 @@ public class modifyProduct implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+
     /**
      * @param actionEvent - save highlighted data from Parts list to associated part to product on Button click
      */
     public void addButtonOnAction(ActionEvent actionEvent) {
         Part selectedPart = (Part) partsTblView.getSelectionModel().getSelectedItem();
         if (selectedPart == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"ERROR");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "ERROR");
             alert.setContentText("Please select a part to associate with product");
             alert.show();
         } else {
             Product.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
         }
     }
+
     /**
      * @param actionEvent - On press of save button, store items in observable list Product
      */
     public void saveButtonOnAction(ActionEvent actionEvent) {
         try {
+            Product tempProduct;
             int id = Integer.parseInt(idTxt.getText());
             String name = nameTxt.getText();
             int stock = Integer.parseInt(invTxt.getText());
@@ -117,23 +122,30 @@ public class modifyProduct implements Initializable {
                 alert.setContentText("Name cannot be blank");
                 alert.showAndWait();
             }
-            int oldID = id;
             Product modProd = new Product(id, name, price, stock, min, max);
-            Inventory.addProduct(modProd);
-            Inventory.deleteProduct(Inventory.lookupProduct(oldID));
+            Inventory.updateProduct(indexID,modProd);
+                stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            try {
+                scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            stage.setScene(new Scene(scene));
+            stage.show();
 
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setContentText("Please enter valid values for all fields");
             alert.showAndWait();
-
         }
     }
+
     /**
      * @param product - Receive product information from main screen from selected tableview row
      */
     public void sendProduct(Product product) {
+        indexID = Inventory.getAllProducts().indexOf(product);
         idTxt.setText(String.valueOf(product.getId()));
         nameTxt.setText(String.valueOf(product.getName()));
         invTxt.setText(String.valueOf(product.getStock()));
@@ -141,6 +153,7 @@ public class modifyProduct implements Initializable {
         maxTxt.setText(String.valueOf(product.getMax()));
         minTxt.setText(String.valueOf(product.getMin()));
     }
+
     /**
      * @param actionEvent - remove highlighted data from associated parts list on Button click
      */
@@ -151,9 +164,10 @@ public class modifyProduct implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            Product.deleteAssociatedPart((Part)(productTableView.getSelectionModel().getSelectedItem()));
+            Product.deleteAssociatedPart((Part) (productTableView.getSelectionModel().getSelectedItem()));
         }
     }
+
     /**
      * @param actionEvent - Search box to look up either part ID or name of part
      */
@@ -161,13 +175,26 @@ public class modifyProduct implements Initializable {
         String search = searchPart.getText();
         ObservableList<Part> searchPartList = Inventory.lookupPart(search);
 
-        if (searchPartList.size() == 0) {
-            int partID = Integer.parseInt(search);
-            Part item = Inventory.lookupPart(partID);
-            if (item != null) {
-                searchPartList.add(item);
+        try {
+            if (searchPartList.size() == 0) {
+                int partID = Integer.parseInt(search);
+                Part item = Inventory.lookupPart(partID);
+                if (item != null) {
+                    searchPartList.add(item);
+                }
             }
+        } catch (NumberFormatException e) {
+            Alert searchField = new Alert(Alert.AlertType.WARNING);
+            searchField.setTitle("ERROR");
+            searchField.setContentText("Part not found");
+            searchField.showAndWait();
+        } catch (IndexOutOfBoundsException e) {
+            Alert numField = new Alert(Alert.AlertType.WARNING);
+            numField.setTitle("ERROR");
+            numField.setContentText("Please search for a valid part number within range");
+            numField.showAndWait();
         }
+
     }
     /**
      * Initialize two tables - one for parts and one for associated parts to product.

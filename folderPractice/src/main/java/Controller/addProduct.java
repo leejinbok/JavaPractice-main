@@ -10,12 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.*;
+import model.Inventory;
+import model.Part;
+import model.Product;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 /**
  * addProduct - a controller for adding products to the inventory.
  */
@@ -26,35 +29,35 @@ public class addProduct implements Initializable {
     @FXML
     private TextField idTxt;
     @FXML
-    private  TextField nameTxt;
+    private TextField nameTxt;
     @FXML
-    private  TextField invTxt;
+    private TextField invTxt;
     @FXML
-    private  TextField priceTxt;
+    private TextField priceTxt;
     @FXML
-    private  TextField maxTxt;
+    private TextField maxTxt;
     @FXML
-    private  TextField minTxt;
+    private TextField minTxt;
     @FXML
-    private  TableView productTableView;
+    private TableView productTableView;
     @FXML
-    private  TableColumn prodIDCol;
+    private TableColumn prodIDCol;
     @FXML
-    private  TableColumn prodNameCol;
+    private TableColumn prodNameCol;
     @FXML
-    private  TableColumn prodPriceCol;
+    private TableColumn prodPriceCol;
     @FXML
-    private  TableColumn prodInvLevelCol;
+    private TableColumn prodInvLevelCol;
     @FXML
-    private  TableView partsTblView;
+    private TableView partsTblView;
     @FXML
-    private  TableColumn partIdCol;
+    private TableColumn partIdCol;
     @FXML
-    private  TableColumn partNameCol;
+    private TableColumn partNameCol;
     @FXML
-    private  TableColumn partInvLevelCol;
+    private TableColumn partInvLevelCol;
     @FXML
-    private  TableColumn partPriceCol;
+    private TableColumn partPriceCol;
     Stage stage;
     Parent scene;
 
@@ -64,7 +67,7 @@ public class addProduct implements Initializable {
     @FXML
     void cancelButtonOnAction(ActionEvent event) throws IOException {
 
-        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         try {
             scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
         } catch (IOException e) {
@@ -77,9 +80,10 @@ public class addProduct implements Initializable {
     /**
      * @param actionEvent - save highlighted data from Parts list to associated part to product on Button click
      */
-    public void addButtonOnAction(ActionEvent actionEvent){
-        Product.addAssociatedPart((Part)(partsTblView.getSelectionModel().getSelectedItem()));
+    public void addButtonOnAction(ActionEvent actionEvent) {
+        Product.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
     }
+
     /**
      * @param actionEvent - On press of save button, store items in observable list Product
      * @throws IOException
@@ -100,14 +104,14 @@ public class addProduct implements Initializable {
                 alert.setContentText("Min must be less than or equal to Max");
                 alert.showAndWait();
 
-            //conditional to address that stock has to be within ranges of min and max
+                //conditional to address that stock has to be within ranges of min and max
             } else if (stock > max || stock < min) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
                 alert.showAndWait();
 
-            //conditional to address that name field cannot be empty
+                //conditional to address that name field cannot be empty
             } else if (name.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
@@ -117,13 +121,23 @@ public class addProduct implements Initializable {
 
             Inventory.addProduct(new Product(id, name, price, stock, min, max));
 
+            stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            try {
+                scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            stage.setScene(new Scene(scene));
+            stage.show();
+
         } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setContentText("Please enter valid values for all fields");
-                alert.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setContentText("Please enter valid values for all fields");
+            alert.showAndWait();
         }
     }
+
     /**
      * @param actionEvent - remove highlighted data from associated parts list on Button click
      */
@@ -134,16 +148,17 @@ public class addProduct implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            Product.deleteAssociatedPart((Part)(productTableView.getSelectionModel().getSelectedItem()));
+            Product.deleteAssociatedPart((Part) (productTableView.getSelectionModel().getSelectedItem()));
         }
     }
+
     /**
      * a simple function to return new auto-generated product ID.
      *
      * @return newID starting at ID 1001.
      */
     public static int newProdId() {
-        int newID = 1000;
+        int newID = 3;
         for (int i = 0; i < Inventory.getAllParts().size(); i++) {
             newID++;
         }
@@ -156,26 +171,34 @@ public class addProduct implements Initializable {
     public void searchPartOnAction(ActionEvent actionEvent) {
         String search = searchPart.getText();
         ObservableList<Part> searchPartList = Inventory.lookupPart(search);
-
-        if (searchPartList.size() == 0) {
-            int partID = Integer.parseInt(search);
-            Part item = Inventory.lookupPart(partID);
-            if (item != null) {
-                searchPartList.add(item);
+        try {
+            if (searchPartList.size() == 0) {
+                int partID = Integer.parseInt(search);
+                Part item = Inventory.lookupPart(partID);
+                if (item != null) {
+                    searchPartList.add(item);
+                }
             }
+        } catch (NumberFormatException e) {
+            Alert searchField = new Alert(Alert.AlertType.WARNING);
+            searchField.setTitle("ERROR");
+            searchField.setContentText("Part not found");
+            searchField.showAndWait();
+        } catch (IndexOutOfBoundsException e) {
+            Alert numField = new Alert(Alert.AlertType.WARNING);
+            numField.setTitle("ERROR");
+            numField.setContentText("Please search for a valid part number within range");
+            numField.showAndWait();
         }
     }
 
     /**
      * Initialize two tables - one for parts and one for associated parts to product.
      *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {

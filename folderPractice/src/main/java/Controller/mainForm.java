@@ -201,16 +201,27 @@ public class mainForm implements Initializable {
     public void productSearchOnAction(ActionEvent actionEvent) {
         String name = productSearch.getText();
         ObservableList<Product> searchProduct = Inventory.lookupProduct(name);
-
-        if(searchProduct.size() == 0) {
-            int productID = Integer.parseInt(name);
-            Product item = Inventory.lookupProduct(productID);
-            if (item != null) {
-                searchProduct.add(item);
+        try {
+            if (searchProduct.size() == 0) {
+                int productID = Integer.parseInt(name);
+                Product item = Inventory.lookupProduct(productID);
+                if (item != null) {
+                    searchProduct.add(item);
+                }
             }
+            productTableView.setItems(searchProduct);
+            productTableView.getSelectionModel().select(0);
+        } catch (NumberFormatException e) {
+            Alert searchField = new Alert(Alert.AlertType.WARNING);
+            searchField.setTitle("ERROR");
+            searchField.setContentText("Part not found");
+            searchField.showAndWait();
+        } catch (IndexOutOfBoundsException e) {
+            Alert numField = new Alert(Alert.AlertType.WARNING);
+            numField.setTitle("ERROR");
+            numField.setContentText("Please search for a valid part number within range");
+            numField.showAndWait();
         }
-        productTableView.setItems(searchProduct);
-        productTableView.getSelectionModel().select(0);
     }
 
     /**
@@ -220,13 +231,29 @@ public class mainForm implements Initializable {
     public void partSearchOnAction(ActionEvent actionEvent) {
         String name = partSearch.getText();
         ObservableList<Part> searchPart = Inventory.lookupPart(name);
-
-        if (searchPart.size() == 0) {
-            int partID = Integer.parseInt(name);
-            Part partItem = Inventory.lookupPart(partID);
-            if (partItem != null) {
-                searchPart.add(partItem);
+        try {
+            if (searchPart.size() == 0) {
+                int partID = Integer.parseInt(name);
+                Part partItem = Inventory.lookupPart(partID);
+                if (partItem != null) {
+                    searchPart.add(partItem);
+                } else {
+                    Alert nullField = new Alert(Alert.AlertType.WARNING);
+                    nullField.setTitle("WARNING");
+                    nullField.setContentText("Please enter a valid value");
+                    nullField.showAndWait();
+                }
             }
+        } catch (NumberFormatException e) {
+            Alert searchField = new Alert(Alert.AlertType.WARNING);
+            searchField.setTitle("ERROR");
+            searchField.setContentText("Part not found");
+            searchField.showAndWait();
+        } catch (IndexOutOfBoundsException e) {
+            Alert numField = new Alert(Alert.AlertType.WARNING);
+            numField.setTitle("ERROR");
+            numField.setContentText("Please search for a valid part number within range");
+            numField.showAndWait();
         }
 
         partsTblView.setItems(searchPart);
