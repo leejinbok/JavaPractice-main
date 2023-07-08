@@ -76,21 +76,21 @@ public class addPart {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Min must be less than or equal to Max");
-                alert.showAndWait();
+                alert.show();
 
                 //conditional to address that stock has to be within ranges of min and max
             } else if (stock > max || stock < min) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
-                alert.showAndWait();
+                alert.show();
 
                 //conditional to address that name field cannot be empty
             } else if (name.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Name cannot be blank");
-                alert.showAndWait();
+                alert.show();
 
                 //conditional branch to set Machine ID text to display correct text
             } else {
@@ -98,7 +98,6 @@ public class addPart {
                 if (addPartInHouse.isSelected()) {
                     machineIDLbl.setText("Machine ID");
                     machineId = Integer.parseInt(machineTxt.getText());
-
                     Inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
                 } else if (addPartOutsourced.isSelected()) {
                     machineIDLbl.setText("Company Name");

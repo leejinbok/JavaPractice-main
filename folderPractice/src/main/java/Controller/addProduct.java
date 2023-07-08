@@ -60,6 +60,7 @@ public class addProduct implements Initializable {
     private TableColumn partPriceCol;
     Stage stage;
     Parent scene;
+    private Product currentProduct = new Product(1,"new",10,5,2, 20);
 
     /**
      * @param event - On press of Cancel button, return to main screen
@@ -81,7 +82,7 @@ public class addProduct implements Initializable {
      * @param actionEvent - save highlighted data from Parts list to associated part to product on Button click
      */
     public void addButtonOnAction(ActionEvent actionEvent) {
-        Product.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
+        currentProduct.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
     }
 
     /**
@@ -148,7 +149,7 @@ public class addProduct implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            Product.deleteAssociatedPart((Part) (productTableView.getSelectionModel().getSelectedItem()));
+            currentProduct.deleteAssociatedPart((Part) (productTableView.getSelectionModel().getSelectedItem()));
         }
     }
 
@@ -177,6 +178,11 @@ public class addProduct implements Initializable {
                 Part item = Inventory.lookupPart(partID);
                 if (item != null) {
                     searchPartList.add(item);
+                } else {
+                    Alert nullField = new Alert(Alert.AlertType.WARNING);
+                    nullField.setTitle("WARNING");
+                    nullField.setContentText("Please enter a valid value");
+                    nullField.showAndWait();
                 }
             }
         } catch (NumberFormatException e) {
@@ -187,7 +193,7 @@ public class addProduct implements Initializable {
         } catch (IndexOutOfBoundsException e) {
             Alert numField = new Alert(Alert.AlertType.WARNING);
             numField.setTitle("ERROR");
-            numField.setContentText("Please search for a valid part number within range");
+            numField.setContentText("Please search for a valid part ID within range");
             numField.showAndWait();
         }
     }
@@ -209,7 +215,7 @@ public class addProduct implements Initializable {
         partInvLevelCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
         partPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        productTableView.setItems(Product.getAllAssociatedParts());
+      //  productTableView.setItems(Product.getAllAssociatedParts());
         prodIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         prodNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         prodInvLevelCol.setCellValueFactory(new PropertyValueFactory<>("stock"));

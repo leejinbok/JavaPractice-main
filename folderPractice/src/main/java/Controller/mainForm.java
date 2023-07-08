@@ -95,7 +95,7 @@ public class mainForm implements Initializable {
         loader.setLocation(getClass().getResource("modifyPart.fxml"));
         loader.load();
         modifyPart modPartController = loader.getController();
-        modPartController.sendPart(partsTblView.getSelectionModel().getSelectedItem());
+        modPartController.sendPart(partsTblView.getSelectionModel().getSelectedIndex(),partsTblView.getSelectionModel().getSelectedItem());
 
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         Parent scene = loader.getRoot();
@@ -182,7 +182,7 @@ public class mainForm implements Initializable {
         alert.setContentText("Are you sure?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            ObservableList<Part> assocParts = Product.getAllAssociatedParts();
+            ObservableList<Part> assocParts = selectProduct.getAllAssociatedParts();
             if (assocParts.size() > 0) {
                 Alert assocItems = new Alert(Alert.AlertType.ERROR, "ERROR");
                 assocItems.setContentText("There is an associated part to selected product");
@@ -214,12 +214,12 @@ public class mainForm implements Initializable {
         } catch (NumberFormatException e) {
             Alert searchField = new Alert(Alert.AlertType.WARNING);
             searchField.setTitle("ERROR");
-            searchField.setContentText("Part not found");
+            searchField.setContentText("Product not found");
             searchField.showAndWait();
         } catch (IndexOutOfBoundsException e) {
             Alert numField = new Alert(Alert.AlertType.WARNING);
             numField.setTitle("ERROR");
-            numField.setContentText("Please search for a valid part number within range");
+            numField.setContentText("Please search for a valid product ID within range");
             numField.showAndWait();
         }
     }
@@ -252,13 +252,9 @@ public class mainForm implements Initializable {
         } catch (IndexOutOfBoundsException e) {
             Alert numField = new Alert(Alert.AlertType.WARNING);
             numField.setTitle("ERROR");
-            numField.setContentText("Please search for a valid part number within range");
+            numField.setContentText("Please search for a valid part ID within range");
             numField.showAndWait();
         }
-
-        partsTblView.setItems(searchPart);
-        partsTblView.getSelectionModel().select(0);
-
     }
 
     /**

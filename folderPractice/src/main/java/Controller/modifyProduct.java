@@ -61,7 +61,7 @@ public class modifyProduct implements Initializable {
     private TableColumn partPriceCol;
     Stage stage;
     Parent scene;
-    private int indexID;
+    private Product currentProduct;
 
     /**
      * @param event - on press of Cancel button, return to main screen
@@ -88,8 +88,8 @@ public class modifyProduct implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR, "ERROR");
             alert.setContentText("Please select a part to associate with product");
             alert.show();
-        } else {
-            Product.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
+        } else if (!currentProduct.getAllAssociatedParts().contains(selectedPart)){
+            currentProduct.addAssociatedPart(selectedPart);
         }
     }
 
@@ -98,13 +98,18 @@ public class modifyProduct implements Initializable {
      */
     public void saveButtonOnAction(ActionEvent actionEvent) {
         try {
-            Product tempProduct;
             int id = Integer.parseInt(idTxt.getText());
             String name = nameTxt.getText();
             int stock = Integer.parseInt(invTxt.getText());
             double price = Double.parseDouble(priceTxt.getText());
             int max = Integer.parseInt(maxTxt.getText());
             int min = Integer.parseInt(minTxt.getText());
+            currentProduct.setId(Integer.parseInt(idTxt.getText()));
+            currentProduct.setName(nameTxt.getText());
+            currentProduct.setStock(Integer.parseInt(invTxt.getText()));
+            currentProduct.setPrice(Double.parseDouble(priceTxt.getText()));
+            currentProduct.setMax(Integer.parseInt(maxTxt.getText()));
+            currentProduct.setMin(Integer.parseInt(minTxt.getText()));
 
             if (min > max) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -122,8 +127,10 @@ public class modifyProduct implements Initializable {
                 alert.setContentText("Name cannot be blank");
                 alert.showAndWait();
             }
-            Product modProd = new Product(id, name, price, stock, min, max);
-            Inventory.updateProduct(indexID,modProd);
+
+            Inventory.updateProduct(Integer.parseInt(idTxt.getText())-1,currentProduct);
+
+
                 stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             try {
                 scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
@@ -145,13 +152,17 @@ public class modifyProduct implements Initializable {
      * @param product - Receive product information from main screen from selected tableview row
      */
     public void sendProduct(Product product) {
-        indexID = Inventory.getAllProducts().indexOf(product);
-        idTxt.setText(String.valueOf(product.getId()));
-        nameTxt.setText(String.valueOf(product.getName()));
-        invTxt.setText(String.valueOf(product.getStock()));
-        priceTxt.setText(String.valueOf(product.getPrice()));
-        maxTxt.setText(String.valueOf(product.getMax()));
-        minTxt.setText(String.valueOf(product.getMin()));
+        currentProduct = product;
+ //       indexID = Inventory.getAllProducts().indexOf(product);
+        idTxt.setText(String.valueOf(currentProduct.getId()));
+        nameTxt.setText(String.valueOf(currentProduct.getName()));
+        invTxt.setText(String.valueOf(currentProduct.getStock()));
+        priceTxt.setText(String.valueOf(currentProduct.getPrice()));
+        maxTxt.setText(String.valueOf(currentProduct.getMax()));
+        minTxt.setText(String.valueOf(currentProduct.getMin()));
+
+        productTableView.setItems(currentProduct.getAllAssociatedParts());
+
     }
 
     /**
@@ -164,7 +175,7 @@ public class modifyProduct implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            Product.deleteAssociatedPart((Part) (productTableView.getSelectionModel().getSelectedItem()));
+            currentProduct.deleteAssociatedPart((Part)(productTableView.getSelectionModel().getSelectedItem()));
         }
     }
 
@@ -174,13 +185,17 @@ public class modifyProduct implements Initializable {
     public void searchPartOnAction(ActionEvent actionEvent) {
         String search = searchPart.getText();
         ObservableList<Part> searchPartList = Inventory.lookupPart(search);
-
         try {
             if (searchPartList.size() == 0) {
                 int partID = Integer.parseInt(search);
                 Part item = Inventory.lookupPart(partID);
                 if (item != null) {
                     searchPartList.add(item);
+                } else {
+                    Alert nullField = new Alert(Alert.AlertType.WARNING);
+                    nullField.setTitle("WARNING");
+                    nullField.setContentText("Please enter a valid value");
+                    nullField.showAndWait();
                 }
             }
         } catch (NumberFormatException e) {
@@ -191,10 +206,9 @@ public class modifyProduct implements Initializable {
         } catch (IndexOutOfBoundsException e) {
             Alert numField = new Alert(Alert.AlertType.WARNING);
             numField.setTitle("ERROR");
-            numField.setContentText("Please search for a valid part number within range");
+            numField.setContentText("Please search for a valid part ID within range");
             numField.showAndWait();
         }
-
     }
     /**
      * Initialize two tables - one for parts and one for associated parts to product.
@@ -216,7 +230,6 @@ public class modifyProduct implements Initializable {
         partInvLevelCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
         partPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        productTableView.setItems(Product.getAllAssociatedParts());
         prodIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         prodNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         prodInvLevelCol.setCellValueFactory(new PropertyValueFactory<>("stock"));

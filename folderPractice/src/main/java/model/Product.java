@@ -11,7 +11,7 @@ import model.Part;
  */
 public class Product {
 
-    private static ObservableList<Part> associatedParts = FXCollections.observableArrayList();
+    private ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     private int id, stock, min, max;
     private String name;
     private double price;
@@ -134,7 +134,7 @@ public class Product {
      * adds part to associatedParts observableList
      * @param part - adds part to associatedParts observable list
      */
-    public static void addAssociatedPart(Part part) {
+    public void addAssociatedPart(Part part) {
         associatedParts.add(part);
     }
 
@@ -142,7 +142,7 @@ public class Product {
      * returns all part values stored in observableList associatedParts
      * @return
      */
-    public static ObservableList<Part> getAllAssociatedParts() {
+    public ObservableList<Part> getAllAssociatedParts() {
         return associatedParts;
     }
 
@@ -151,7 +151,7 @@ public class Product {
      * @param associatedPart - removes Part associatedPart from observableList
      * @return true
      */
-    public static boolean deleteAssociatedPart(Part associatedPart) {
+    public boolean deleteAssociatedPart(Part associatedPart) {
         associatedParts.remove(associatedPart);
         return true;
     }

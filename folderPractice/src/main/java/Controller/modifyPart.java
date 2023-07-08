@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
  * modifyPart - Controller to modify part data in the inventory
  */
 public class modifyPart {
-    private int index = 0;
     Stage stage;
     Parent scene;
     @FXML
@@ -45,7 +44,7 @@ public class modifyPart {
     private RadioButton modPartOutsourced;
     @FXML
     private Label machineIDLbl;
-    private int indexID;
+    private int indexID = 0;
 
     /**
      * @param event - On press of Save button, saves entered part data to inventory
@@ -62,8 +61,8 @@ public class modifyPart {
             double price = Double.parseDouble(priceTxt.getText());
             int max = Integer.parseInt(maxTxt.getText());
             int min = Integer.parseInt(minTxt.getText());
-            int machineId = Integer.parseInt(machineTxt.getText());
-            String companyName = null;
+            int machineId;
+            String companyName;
 
             if (min > max) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -90,7 +89,7 @@ public class modifyPart {
 
                 } else if (modPartOutsourced.isSelected()) {
                     machineIDLbl.setText("Company Name");
-                    companyName = machineTxt.getText();
+                    companyName = String.valueOf(machineTxt.getText());
                     Part outsourcedPart = new Outsourced(id, name, price, stock, min, max, companyName);
                     Inventory.updatePart(indexID,outsourcedPart);
                 }
@@ -108,6 +107,7 @@ public class modifyPart {
             alert.setTitle("Error");
             alert.setContentText("Please enter valid values for all fields");
             alert.showAndWait();
+            return;
         }
     }
 
@@ -142,8 +142,8 @@ public class modifyPart {
     /**
      * @param part - Receive parts information from main screen from selected tableview row
      */
-    public void sendPart(Part part) {
-        indexID = Inventory.getAllParts().indexOf(part);
+    public void sendPart(int index, Part part) {
+        indexID = index;
         idTxt.setText(String.valueOf(part.getId()));
         nameTxt.setText(String.valueOf(part.getName()));
         invTxt.setText(String.valueOf(part.getStock()));
