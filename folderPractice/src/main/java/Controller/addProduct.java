@@ -82,7 +82,15 @@ public class addProduct implements Initializable {
      * @param actionEvent - save highlighted data from Parts list to associated part to product on Button click
      */
     public void addButtonOnAction(ActionEvent actionEvent) {
-        currentProduct.addAssociatedPart((Part) (partsTblView.getSelectionModel().getSelectedItem()));
+        Part selectedPart = (Part) partsTblView.getSelectionModel().getSelectedItem();
+        if (selectedPart == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "ERROR");
+            alert.setContentText("Please select a part to associate with product");
+            alert.show();
+        } else if (!currentProduct.getAllAssociatedParts().contains(selectedPart)){
+            currentProduct.addAssociatedPart(selectedPart);
+            productTableView.setItems(currentProduct.getAllAssociatedParts());
+        }
     }
 
     /**
@@ -91,36 +99,34 @@ public class addProduct implements Initializable {
      */
     public void saveButtonOnAction(ActionEvent actionEvent) throws IOException {
         try {
-            int id = newProdId();
-            String name = nameTxt.getText();
-            int stock = Integer.parseInt(invTxt.getText());
-            double price = Double.parseDouble(priceTxt.getText());
-            int max = Integer.parseInt(maxTxt.getText());
-            int min = Integer.parseInt(minTxt.getText());
+            currentProduct.setId(newProdId());
+            currentProduct.setName(nameTxt.getText());
+            currentProduct.setStock(Integer.parseInt(invTxt.getText()));
+            currentProduct.setPrice(Double.parseDouble(priceTxt.getText()));
+            currentProduct.setMax(Integer.parseInt(maxTxt.getText()));
+            currentProduct.setMin(Integer.parseInt(minTxt.getText()));
 
-            //conditional to address that max has to be greater than min
-            if (min > max) {
+            if (currentProduct.getMin() > currentProduct.getMax()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Min must be less than or equal to Max");
                 alert.showAndWait();
-
-                //conditional to address that stock has to be within ranges of min and max
-            } else if (stock > max || stock < min) {
+                return;
+            } else if (currentProduct.getStock() > currentProduct.getMax() || currentProduct.getStock() < currentProduct.getMin()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
                 alert.showAndWait();
-
-                //conditional to address that name field cannot be empty
-            } else if (name.isEmpty()) {
+                return;
+            } else if (currentProduct.getName().isEmpty() || currentProduct.getName().equals(" ")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Name cannot be blank");
                 alert.showAndWait();
+                return;
             }
-
-            Inventory.addProduct(new Product(id, name, price, stock, min, max));
+                Inventory.addProduct(currentProduct);
+                Inventory.updateProduct(currentProduct.getId() - 1, currentProduct);
 
             stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             try {

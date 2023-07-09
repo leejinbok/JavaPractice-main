@@ -76,21 +76,24 @@ public class addPart {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Min must be less than or equal to Max");
-                alert.show();
+                alert.showAndWait();
+                return;
 
                 //conditional to address that stock has to be within ranges of min and max
             } else if (stock > max || stock < min) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
-                alert.show();
+                alert.showAndWait();
+                return;
 
                 //conditional to address that name field cannot be empty
             } else if (name.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Name cannot be blank");
-                alert.show();
+                alert.showAndWait();
+                return;
 
                 //conditional branch to set Machine ID text to display correct text
             } else {

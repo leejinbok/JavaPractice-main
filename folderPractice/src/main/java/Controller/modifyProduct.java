@@ -69,6 +69,26 @@ public class modifyProduct implements Initializable {
      */
     public void cancelButtonOnAction(ActionEvent event) throws IOException {
 
+        if (currentProduct.getMin() > currentProduct.getMax()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("Min must be less than or equal to Max");
+            alert.showAndWait();
+            return;
+        } else if (currentProduct.getStock() > currentProduct.getMax() || currentProduct.getStock() < currentProduct.getMin()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("Inv must be within range between Min and Max");
+            alert.showAndWait();
+            return;
+        } else if (currentProduct.getName().isEmpty() || currentProduct.getName().equals(" ")) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setContentText("Name cannot be blank");
+            alert.showAndWait();
+            return;
+        }
+
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         try {
             scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("mainForm.fxml")));
@@ -98,12 +118,6 @@ public class modifyProduct implements Initializable {
      */
     public void saveButtonOnAction(ActionEvent actionEvent) {
         try {
-            int id = Integer.parseInt(idTxt.getText());
-            String name = nameTxt.getText();
-            int stock = Integer.parseInt(invTxt.getText());
-            double price = Double.parseDouble(priceTxt.getText());
-            int max = Integer.parseInt(maxTxt.getText());
-            int min = Integer.parseInt(minTxt.getText());
             currentProduct.setId(Integer.parseInt(idTxt.getText()));
             currentProduct.setName(nameTxt.getText());
             currentProduct.setStock(Integer.parseInt(invTxt.getText()));
@@ -111,27 +125,28 @@ public class modifyProduct implements Initializable {
             currentProduct.setMax(Integer.parseInt(maxTxt.getText()));
             currentProduct.setMin(Integer.parseInt(minTxt.getText()));
 
-            if (min > max) {
+            if (currentProduct.getMin() > currentProduct.getMax()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Min must be less than or equal to Max");
                 alert.showAndWait();
-            } else if (stock > max || stock < min) {
+                return;
+            } else if (currentProduct.getStock() > currentProduct.getMax() || currentProduct.getStock() < currentProduct.getMin()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
                 alert.showAndWait();
-            } else if (name.isEmpty()) {
+                return;
+            } else if (currentProduct.getName().isEmpty() || currentProduct.getName().equals(" ")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Name cannot be blank");
                 alert.showAndWait();
+                return;
             }
+                Inventory.updateProduct(Integer.parseInt(idTxt.getText()) - 1, currentProduct);
 
-            Inventory.updateProduct(Integer.parseInt(idTxt.getText())-1,currentProduct);
-
-
-                stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             try {
                 scene = FXMLLoader.load(getClass().getResource("mainForm.fxml"));
             } catch (IOException e) {

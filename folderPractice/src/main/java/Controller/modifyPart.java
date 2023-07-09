@@ -69,16 +69,19 @@ public class modifyPart {
                 alert.setTitle("Warning!");
                 alert.setContentText("Min must be less than or equal to Max");
                 alert.showAndWait();
+                return;
             } else if (stock > max || stock < min) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Inv must be within range between Min and Max");
                 alert.showAndWait();
+                return;
             } else if (name.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning!");
                 alert.setContentText("Name cannot be blank");
                 alert.showAndWait();
+                return;
             } else {
 
                 if (modPartInHouse.isSelected()) {
@@ -107,7 +110,6 @@ public class modifyPart {
             alert.setTitle("Error");
             alert.setContentText("Please enter valid values for all fields");
             alert.showAndWait();
-            return;
         }
     }
 
